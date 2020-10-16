@@ -1,0 +1,29 @@
+{
+  "name": "minichan",
+  "version": "0.0.1",
+  "description": "JavaScript otimizator",
+  "main": "index.js",
+  "scripts": {},
+  "bin": {
+    "minichan": "bin/minichan.js"
+  },
+  "author": {
+    "name": "João Gabriel",
+    "url": "https://github.com/Zaetic"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "filesize": "^6.1.0",
+    "fs-extra": "^9.0.1",
+    "glob": "^7.1.6",
+    "terser": "^5.3.2",
+    "yargs": "^16.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zaetic/Minichan"
+  },
+  "keywords": ["minichan", "minify"]
+
+}

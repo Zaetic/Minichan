@@ -4,15 +4,17 @@ const {sync: globSync} = require('glob')
 const filesize = require('filesize')
 const Terser = require('terser');
 const chalk = require('chalk');
+const Auth = require("./structures/auth.js")
 
 class Minichan {
     constructor(folder = null){
         this.local = folder;
         this.localFormat = null;
+        this.auth = new Auth(this.local);
     }
 
     async init(){
-        await this.autentication(this.local);
+        await this.auth.init();
         await this.copyFiles(this.local);
         
         let files = await this.getFiles(this.local);
@@ -75,10 +77,6 @@ class Minichan {
             resolve(sizes)
             reject("Error")
         });
-    }
-
-    async autentication(local){
-        if(typeof local != 'string') throw new Error(chalk.bold.red("Invalid Path !!"));
     }
 
     async copyFiles(local){

@@ -1,50 +1,41 @@
 "use strict";
-const fse = require('fs-extra')
-const {sync: globSync} = require('glob')
-const filesize = require('filesize')
+const fse = require('fs-extra');
 const Terser = require('terser');
 const chalk = require('chalk');
-const Auth = require("./structures/auth.js")
+const Auth = require("./structures/auth.js");
+const Files = require("./structures/files.js");
 
 class Minichan {
     constructor(folder = null){
         this.local = folder;
         this.localFormat = null;
         this.auth = new Auth(this.local);
+        this.files = new Files(this.local);
     }
 
     async init(){
         await this.auth.init();
-        await this.copyFiles(this.local);
-        
-        let files = await this.getFiles(this.local);
-        let size = {
-            old: 0,
-            new: 0,
-            rOld: null,
-            rNew: null
-        }
-        
-        await this.getSize(files).then(result => size.old += result);
-        await this.minify(files);
-        await this.getSize(files).then(result => size.new += result);
+        await this.files.init();
+
+        let sFiles = this.files.files;
+        await this.minify(sFiles.get("js"));
+        sFiles = await this.files.setSizes("new", sFiles);
+
+        let sizes = await this.files.realSize(sFiles);
     
-        size.rOld = filesize(size.old);
-        size.rNew = filesize(size.new);
-    
-        console.log(`${chalk.bold.greenBright("[Reduction]")} ${chalk.bold(size.rOld)} to ${chalk.bold(size.rNew)}`)
+        console.log(`${chalk.bold.greenBright("[Reduction Total]")} ${chalk.bold(sizes.old)} to ${chalk.bold(sizes.new)}`)
         console.log(`${chalk.bold.greenBright("[Success]")} Result folder ${chalk.bold.yellow(`./dist/${this.localFormat}`)}`)
     }
 
     async minify(files){
         for (let index = 0; index < files.length; index++) {
             const element = files[index];
-            let file = element;
+            let file = element.path;
 
             await Terser.minify(fse.readFileSync(file, 'utf8')).then(result => {
         
                 if(result.code) {
-                    fse.writeFileSync(file, result.code, 'utf8');
+                fse.writeFileSync(file, result.code, 'utf8');
                 };
 
             }).catch(e => {
@@ -56,37 +47,6 @@ class Minichan {
                 console.log(`${chalk.red.bold("Error")} ${file}:`, e)
             })
         }
-    }
-
-    async getFiles(local){
-        this.localFormat = await this.formatFileName(local);
-        const files = globSync(`dist/${this.localFormat}/**/*.js`);
-        if(files.length === 0) throw new Error(chalk.bold.red(`${chalk.red.bold("Error")}: Nothing to do here`));
-
-        return files;
-    }
-
-    async getSize(files){
-        return new Promise((resolve, reject) => {
-            let sizes = 0;
-            for (let index = 0; index < files.length; index++) {
-                const element = files[index];
-                const {size} = fse.statSync(element)
-                sizes += size;
-            }
-            resolve(sizes)
-            reject("Error")
-        });
-    }
-
-    async copyFiles(local){
-        await fse.copy(local, `./dist/${await this.formatFileName(local)}`)
-        console.log(`${chalk.bold.greenBright("[Folder copied]")}`);
-    }
-
-    async formatFileName(filename){
-        filename = filename.replace(/^.*[\\\/]/, '');
-        return filename;
     }
 }
 

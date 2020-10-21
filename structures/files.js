@@ -54,8 +54,12 @@ class Files {
     }
 
     async getSize(file){
-        let {size} = fse.statSync(file)
-        return size;
+        try{
+            let {size} = fse.statSync(file);
+            return size;
+        }catch(e){
+            if(e.code === "ENOENT") return 0;
+        }
     }
 
     async copyFiles(){

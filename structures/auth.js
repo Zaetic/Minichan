@@ -8,19 +8,19 @@ class Auth {
     }
 
     async init(){
-        let auth = await this.autentication();
+        let auth = await this.autentication(this.local);
         if(auth) throw new Error(chalk.bold.red(auth));
         else return console.log(`${chalk.bold.greenBright("[Auth]")} Path ok`)
     }
 
-    async autentication(){
-        if(typeof this.local != 'string') return "Invalid type path";
-        else if(!await this.folderExist()) return "Invalid Path";
+    async autentication(local){
+        if(typeof local != 'string') return "Invalid type path";
+        else if(!await this.folderExist(local)) return "Invalid Path";
         return;
     }
 
-    async folderExist(){
-        let exist = fse.pathExistsSync(this.local);
+    async folderExist(local){
+        let exist = fse.pathExistsSync(local);
         return exist;
     }
 }

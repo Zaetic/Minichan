@@ -14,15 +14,6 @@ class Mini {
         return this.files;
     }
 
-    async clear(files){
-        for (let index = 0; index < files.length; index++) {
-            const element = files[index];
-            let file = element.path;
-
-            fse.unlinkSync(file);
-        }
-    }
-
     async minifyJS(files){
         for (let index = 0; index < files.length; index++) {
             const element = files[index];
@@ -40,6 +31,15 @@ class Mini {
                 }
                 console.log(`${chalk.red.bold("Error")} ${file}:`, e)
             })
+        }
+    }
+
+    async clear(files){
+        for (let index = 0; index < files.length; index++) {
+            const element = files[index];
+            let file = element.path;
+
+            fse.unlinkSync(file);
         }
     }
 

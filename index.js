@@ -24,7 +24,7 @@ class Minichan {
         let sizes = await this.files.realSize(sFiles);
     
         console.log(`${chalk.bold.greenBright("[Reduction Total]")} ${chalk.bold(sizes.old)} to ${chalk.bold(sizes.new)}`)
-        console.log(`${chalk.bold.greenBright("[Success]")} Result folder ${chalk.bold.yellow(`./dist/${this.localFormat}`)}`)
+        console.log(`${chalk.bold.greenBright("[Success]")} Result folder ${chalk.bold.yellow(`./dist/${this.files.localFormat}`)}`)
     }
 }
 

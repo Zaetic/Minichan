@@ -13,13 +13,18 @@ class Files {
     }
 
     async init(){
-        this.newLocal = `./dist/${await this.formatFileName(this.local)}`;
+        try{
+            this.newLocal = `./dist/${await this.formatFileName(this.local)}`;
 
-        await this.copyFiles();
+            await this.copyFiles();
 
-        let filesGet = await this.getFiles();
-        await this.filterTypes(filesGet);
-        this.files = await this.setSizes("old", this.files);
+            let filesGet = await this.getFiles();
+            console.log("a")
+            await this.filterTypes(filesGet);
+            this.files = await this.setSizes("old", this.files);
+        }catch(e){
+            throw new Error(chalk.bold.red(`${chalk.red.bold(e.message)}`));
+        }
     }
 
     async copyFiles(){

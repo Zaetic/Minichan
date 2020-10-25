@@ -8,10 +8,14 @@ class Mini {
     }    
 
     async init(files){
-        this.files = files;
-        await this.minifyJS(await this.returnType(this.files, "js"));
-        await this.clear(await this.returnType(this.files, "md"));
-        return this.files;
+        try{
+            this.files = files;
+            await this.minifyJS(await this.returnType(this.files, "js"));
+            await this.clear(await this.returnType(this.files, "md"));
+            return this.files;
+        }catch(e){
+            throw new Error(chalk.bold.red(`${chalk.red.bold(e.message)}`));
+        }
     }
 
     async minifyJS(files){

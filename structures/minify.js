@@ -1,6 +1,7 @@
 "use strict";
 const fse = require('fs-extra');
 const Terser = require('terser');
+const chalk = require('chalk');
 
 class Mini {
     constructor(){
@@ -11,6 +12,7 @@ class Mini {
         try{
             this.files = files;
             await this.minifyJS(await this.returnType(this.files, "js"));
+            await this.minifyJSON(await this.returnType(this.files, "json"));
             await this.clear(await this.returnType(this.files, "md"));
             return this.files;
         }catch(e){
@@ -35,6 +37,16 @@ class Mini {
                 }
                 console.log(`${chalk.red.bold("Error")} ${file}:`, e)
             })
+        }
+    }
+
+    async minifyJSON(files){
+        for (let index = 0; index < files.length; index++) {
+            const element = files[index];
+            let file = element.path;
+            let fileRequire = fse.readJsonSync(file, 'utf8');
+            
+            fse.writeFileSync(file, JSON.stringify(fileRequire), 'utf8');
         }
     }
 

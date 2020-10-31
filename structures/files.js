@@ -19,7 +19,6 @@ class Files {
             await this.copyFiles();
 
             let filesGet = await this.getFiles();
-            console.log("a")
             await this.filterTypes(filesGet);
             this.files = await this.setSizes("old", this.files);
         }catch(e){

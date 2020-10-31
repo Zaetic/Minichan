@@ -35,6 +35,7 @@ Special thanks to all technologies and dependencies used to make this project co
 | [Node.js](https://nodejs.org/en/) | JS  |12.17.0|
 | [Fs-extra](https://www.npmjs.com/package/fs-extra) | NPM  |9.0.1|
 | [Chalk](https://www.npmjs.com/package/chalk) | NPM  |4.1.0|
-| [Terser](https://www.npmjs.com/package/terser) | NPM  |5.3.5|
-| [Glob](https://www.npmjs.com/package/glob) | NPM  |7.3.6|
+| [Terser](https://www.npmjs.com/package/terser) | NPM  |5.3.8|
+| [Glob](https://www.npmjs.com/package/glob) | NPM  |7.1.6|
 | [Filesize](https://www.npmjs.com/package/filesize) | NPM  |6.1.0|
+| [Yargs](https://www.npmjs.com/package/yargs) | NPM  |16.1.0|

@@ -46,7 +46,7 @@ class Files {
         for (let index = 0; index < filesGet.length; index++) {
             const element = filesGet[index];
             let ext = await this.getFileExtension(element);
-            
+
             let newElement = {
                 path: element
             }
@@ -119,7 +119,15 @@ class Files {
     }
 
     async getFileExtension(filename){
-        return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        let ext = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        if(!ext){
+            await this.IsDirectory(filename) ? ext = "dir" : ext = "undefined"
+        }
+        return ext; 
+    }
+
+    async IsDirectory(file){
+        return fse.statSync(file).isDirectory();
     }
 
     async formatFileName(filename){

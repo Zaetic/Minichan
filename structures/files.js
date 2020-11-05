@@ -2,7 +2,8 @@
 const fse = require('fs-extra');
 const chalk = require('chalk');
 const filesize = require('filesize');
-const {sync: globSync} = require('glob')
+const {sync: globSync} = require('glob');
+const patcher = require("path");
 
 class Files {
     constructor(local){
@@ -27,9 +28,13 @@ class Files {
     }
 
     async copyFiles(){
+        let exclude = globSync(`${this.local}/.git/**/*`)
+        if(exclude) exclude.push(`${this.local}/.git`)
         await fse.copy(this.local, this.newLocal, {
             filter: path => {
-                return !(path.indexOf('node_modules') > -1)
+                if(path.indexOf('node_modules') > -1) return false
+                else if(exclude.find(name => patcher.resolve(name) === patcher.resolve(path))) return false
+                else return true;
             }
         });
         console.log(`${chalk.bold.greenBright("[Folder copied]")}`);

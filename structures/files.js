@@ -1,100 +1,98 @@
-"use strict";
 const fse = require('fs-extra');
 const chalk = require('chalk');
 const filesize = require('filesize');
-const {sync: globSync} = require('glob');
-const patcher = require("path");
+const { sync: globSync } = require('glob');
+const patcher = require('path');
 
 class Files {
-    constructor(local){
+    constructor(local) {
         this.local = local;
         this.newLocal = null;
         this.localFormat = null;
         this.files = new Map();
     }
 
-    async init(){
-        try{
-            this.newLocal = `./dist/${await this.formatFileName(this.local)}`;
-
+    async init() {
+        try {
+            this.newLocal = `./dist/${this.constructor.formatFileName(this.local)}`;
             await this.copyFiles();
 
-            let filesGet = await this.getFiles();
-            await this.filterTypes(filesGet);
-            this.files = await this.setSizes("old", this.files);
-        }catch(e){
+            const filesGet = this.getFiles();
+            this.filterTypes(filesGet);
+            this.files = await this.setSizes('old', this.files);
+        } catch (e) {
             throw new Error(chalk.bold.red(`${chalk.red.bold(e.message)}`));
         }
     }
 
-    async copyFiles(){
-        let exclude = globSync(`${this.local}/.git/**/*`)
-        if(exclude) exclude.push(`${this.local}/.git`)
+    async copyFiles() {
+        const exclude = globSync(`${this.local}/.git/**/*`);
+        if (exclude) exclude.push(`${this.local}/.git`);
         await fse.copy(this.local, this.newLocal, {
-            filter: path => {
-                if(path.indexOf('node_modules') > -1) return false
-                else if(exclude.find(name => patcher.resolve(name) === patcher.resolve(path))) return false
-                else return true;
-            }
+            filter: (path) => {
+                if (path.indexOf('node_modules') > -1) return false;
+                if (exclude.find((name) => patcher.resolve(name) === patcher.resolve(path))) {
+                    return false;
+                }
+                return true;
+            },
         });
-        console.log(`${chalk.bold.greenBright("[Folder copied]")}`);
+        console.log(`${chalk.bold.greenBright('[Folder copied]')}`);
     }
 
-    async getFiles(){
-        this.localFormat = await this.formatFileName(this.local);
+    getFiles() {
+        this.localFormat = this.constructor.formatFileName(this.local);
         const files = globSync(`dist/${this.localFormat}/**/*`);
-        if(files.length === 0) throw new Error(chalk.bold.red(`${chalk.red.bold("Error")}: Nothing to do here`));
+        if (files.length === 0) throw new Error(chalk.bold.red(`${chalk.red.bold('Error')}: Nothing to do here`));
         return files;
     }
 
-    async filterTypes(filesGet){
-        for (let index = 0; index < filesGet.length; index++) {
+    filterTypes(filesGet) {
+        for (let index = 0; index < filesGet.length; index += 1) {
             const element = filesGet[index];
-            let ext = await this.getFileExtension(element);
+            const ext = this.getFileExtension(element);
 
-            let newElement = {
-                path: element
-            }
+            const newElement = {
+                path: element,
+            };
 
-            if(ext){
-                if (!this.files.get(ext)){
+            if (ext) {
+                if (!this.files.get(ext)) {
                     this.files.set(ext, [newElement]);
-                }else{
-                    let arrayFiles = this.files.get(ext);
+                } else {
+                    const arrayFiles = this.files.get(ext);
                     arrayFiles.push(newElement)
                     this.files.set(ext, arrayFiles);
                 }
             }
-            
         }
     }
 
-    async setSizes(type, filesMap){
-
-        for (var [key, value] of filesMap) {
-            for (let index = 0; index < value.length; index++) {
+    async setSizes(type, filesMap) {
+        for (const [key, value] of filesMap) {
+            for (let index = 0; index < value.length; index += 1) {
                 const element = value[index];
-                
-                if(type === "old") element.oldSize = await this.getSize(element.path);
-                else if(type === "new") element.newSize = await this.getSize(element.path);
-            } 
+
+                if (type === 'old') element.oldSize = this.constructor.getSize(element.path);
+                else if (type === 'new') element.newSize = this.constructor.getSize(element.path);
+            }
         }
         return filesMap;
     }
 
-    async realSize(filesMap){
-        let sizes = {
+    static realSize(filesMap) {
+        const sizes = {
             old: 0,
-            new: 0
-        }
+            new: 0,
+        };
 
-        for (var [key, value] of filesMap) {
-            for (let index = 0; index < value.length; index++) {
+        for (const [key, value] of filesMap) {
+            for (let index = 0; index < value.length; index += 1) {
                 const element = value[index];
-                
+
                 sizes.old += element.oldSize;
                 sizes.new += element.newSize;
-            }   
+            }
         }
 
         sizes.old = filesize(sizes.old);
@@ -102,42 +100,43 @@ class Files {
         return sizes;
     }
 
-    async getSizeAll(files){
-        return new Promise( async (resolve, reject) => {
+    async getSizeAll(files) {
+        return new Promise((resolve, reject) => {
             let sizes = 0;
-            for (let index = 0; index < files.length; index++) {
+            for (let index = 0; index < files.length; index += 1) {
                 const element = files[index];
-                sizes += await getSize(element);
+                sizes += this.constructor.getSize(element);
             }
-            resolve(sizes)
-            reject("Error")
+            resolve(sizes);
+            reject(new Error('Get all Sizes failed'));
         });
     }
 
-    async getSize(file){
-        try{
-            let {size} = fse.statSync(file);
-            return size;
-        }catch(e){
-            if(e.code === "ENOENT") return 0;
+    static getSize(file) {
+        let sizeSend = 0;
+        try {
+            const { size } = fse.statSync(file);
+            sizeSend = size;
+        } catch (e) {
+            if (e.code === 'ENOENT') sizeSend = 0;
         }
+        return sizeSend;
     }
 
-    async getFileExtension(filename){
+    getFileExtension(filename) {
         let ext = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-        if(!ext){
-            await this.IsDirectory(filename) ? ext = "dir" : ext = "undefined"
+        if (!ext) {
+            ext = this.constructor.IsDirectory(filename) ? 'dir' : 'undefined';
         }
-        return ext; 
+        return ext;
     }
 
-    async IsDirectory(file){
+    static IsDirectory(file) {
         return fse.statSync(file).isDirectory();
     }
 
-    async formatFileName(filename){
-        filename = filename.replace(/^.*[\\\/]/, '');
-        return filename;
+    static formatFileName(filename) {
+        return patcher.basename(filename);
     }
 }
 

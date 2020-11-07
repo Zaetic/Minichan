@@ -14,7 +14,7 @@ class Auth {
 
     autentication(local) {
         if (typeof local !== 'string') return 'Invalid type path';
-        if (!this.folderExist(local)) return 'Invalid Path';
+        if (!this.constructor.folderExist(local)) return 'Invalid Path';
         return null;
     }
 

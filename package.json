@@ -1,6 +1,6 @@
 {
   "name": "minichan",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "JavaScript otimizator",
   "main": "index.js",
   "scripts": {},
@@ -30,8 +30,8 @@
     "compress"
   ],
   "devDependencies": {
-    "eslint": "^7.12.1",
-    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint": "^7.13.0",
+    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1"
   }
 }

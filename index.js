@@ -4,15 +4,18 @@ const Files = require('./structures/files.js');
 const Mini = require('./structures/minify.js');
 
 class Minichan {
-    constructor(folder = null) {
-        this.local = folder;
+    constructor() {
+        this.local = null;
         this.localFormat = null;
+    }
+
+    async init(local) {
+        this.local = local;
+
         this.auth = new Auth(this.local);
         this.files = new Files(this.local);
         this.mini = new Mini();
-    }
 
-    async init() {
         await this.auth.init();
         await this.files.init();
 

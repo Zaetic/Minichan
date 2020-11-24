@@ -1,14 +1,23 @@
 #!/usr/bin/env node
 
-const { argv } = require('yargs');
+const yargs = require('yargs');
 const Minichan = require('../index.js');
 
-if (argv.mini) {
-    if (typeof argv.mini === 'boolean') {
-        new Minichan().init(process.cwd());
-    } else {
-        new Minichan().init(argv.mini);
-    }
+yargs
+.scriptName('minichan').usage('$0 <cmd> [args]')
+.command('mini [path]', 'Minify', (yarg) => {
+    yarg.option('path', {
+        describe: 'Project path',
+        alias: 'p',
+        default: process.cwd(),
+    });
+})
+.help()
+.alias('help', 'h')
+.alias('version', 'v');
+
+if (yargs.argv._[0] === 'mini') {
+    new Minichan().init(yargs.argv.path);
 } else {
-    console.log("Use 'minichan --mini path'");
+    console.log('Typing minichan --help');
 }

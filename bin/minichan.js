@@ -2,6 +2,7 @@
 
 const yargs = require('yargs');
 const updateNotifier = require('update-notifier');
+const { Confirm } = require('enquirer');
 const pkg = require('../package.json');
 const Minichan = require('../index.js');
 
@@ -19,7 +20,18 @@ yargs
 .alias('version', 'v');
 
 if (yargs.argv._[0] === 'mini') {
-    new Minichan().init(yargs.argv.path);
+    const prompt = new Confirm({
+        name: 'question',
+        message: `Is the path correct? : [${yargs.argv.path}]`,
+    });
+
+    prompt.run().then((answer) => {
+        if (answer) {
+            new Minichan().init(yargs.argv.path);
+        } else {
+            console.log('- Operation canceled -');
+        }
+    }).catch((error) => console.log('- Operation failed -', error));
 } else {
     console.log('Type minichan --help');
 }

@@ -43,7 +43,7 @@ class Files {
         });
         await fse.move(tempDir.name, this.newLocal);
 
-        console.log(`${chalk.bold.greenBright('[Folder copied]')}`);
+        console.log(`${chalk.bold.greenBright('[Folder]')} Copied`);
     }
 
     getFiles() {

@@ -1,7 +1,7 @@
 {
   "name": "minichan",
-  "version": "0.0.3",
-  "description": "JavaScript otimizator",
+  "version": "0.0.4",
+  "description": "JavaScript optimizer",
   "main": "index.js",
   "scripts": {},
   "bin": {
@@ -18,10 +18,10 @@
     "filesize": "^6.1.0",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
-    "terser": "^5.3.8",
+    "terser": "^5.5.1",
     "tmp": "^0.2.1",
     "update-notifier": "^5.0.1",
-    "yargs": "^16.1.0"
+    "yargs": "^16.2.0"
   },
   "repository": {
     "type": "git",
@@ -30,10 +30,11 @@
   "keywords": [
     "minichan",
     "minify",
-    "compress"
+    "compress",
+    "terminal"
   ],
   "devDependencies": {
-    "eslint": "^7.13.0",
+    "eslint": "^7.15.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1"
   }

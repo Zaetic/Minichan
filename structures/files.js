@@ -67,7 +67,7 @@ class Files {
                     this.files.set(ext, [newElement]);
                 } else {
                     const arrayFiles = this.files.get(ext);
-                    arrayFiles.push(newElement)
+                    arrayFiles.push(newElement);
                     this.files.set(ext, arrayFiles);
                 }
             }
@@ -75,7 +75,7 @@ class Files {
     }
 
     async setSizes(type, filesMap) {
-        for (const [key, value] of filesMap) {
+        for (const value of filesMap.values()) {
             for (let index = 0; index < value.length; index += 1) {
                 const element = value[index];
 
@@ -92,7 +92,7 @@ class Files {
             new: 0,
         };
 
-        for (const [key, value] of filesMap) {
+        for (const value of filesMap.values()) {
             for (let index = 0; index < value.length; index += 1) {
                 const element = value[index];
 
@@ -130,7 +130,7 @@ class Files {
     }
 
     getFileExtension(filename) {
-        let ext = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        let ext = filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
         if (!ext) {
             ext = this.constructor.IsDirectory(filename) ? 'dir' : 'undefined';
         }

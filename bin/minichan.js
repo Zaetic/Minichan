@@ -21,6 +21,7 @@ yargs
 
 if (yargs.argv._[0] === 'mini') {
     const prompt = new Confirm({
+        initial: true,
         name: 'question',
         message: `Is the path correct? : [${yargs.argv.path}]`,
     });

@@ -1,8 +1,9 @@
 const fse = require('fs-extra');
 const chalk = require('chalk');
 const filesize = require('filesize');
+const path = require('path');
+const tmp = require('tmp');
 const { sync: globSync } = require('glob');
-const patcher = require('path');
 
 class Files {
     constructor(local) {
@@ -28,16 +29,21 @@ class Files {
     async copyFiles() {
         const exclude = globSync(`${this.local}/.git/**/*`);
         if (exclude) exclude.push(`${this.local}/.git`);
-        await fse.copy(this.local, this.newLocal, {
-            filter: (path) => {
-                if (path.indexOf('node_modules') > -1) return false;
-                if (exclude.find((name) => patcher.resolve(name) === patcher.resolve(path))) {
+
+        const tempDir = tmp.dirSync();
+
+        await fse.copy(this.local, tempDir.name, {
+            filter: (pathThis) => {
+                if (pathThis.indexOf('node_modules') > -1) return false;
+                if (exclude.find((name) => path.resolve(name) === path.resolve(pathThis))) {
                     return false;
                 }
                 return true;
             },
         });
-        console.log(`${chalk.bold.greenBright('[Folder copied]')}`);
+        await fse.move(tempDir.name, this.newLocal);
+
+        console.log(`${chalk.bold.greenBright('[Folder]')} Copied`);
     }
 
     getFiles() {
@@ -61,7 +67,7 @@ class Files {
                     this.files.set(ext, [newElement]);
                 } else {
                     const arrayFiles = this.files.get(ext);
-                    arrayFiles.push(newElement)
+                    arrayFiles.push(newElement);
                     this.files.set(ext, arrayFiles);
                 }
             }
@@ -69,7 +75,7 @@ class Files {
     }
 
     async setSizes(type, filesMap) {
-        for (const [key, value] of filesMap) {
+        for (const value of filesMap.values()) {
             for (let index = 0; index < value.length; index += 1) {
                 const element = value[index];
 
@@ -86,7 +92,7 @@ class Files {
             new: 0,
         };
 
-        for (const [key, value] of filesMap) {
+        for (const value of filesMap.values()) {
             for (let index = 0; index < value.length; index += 1) {
                 const element = value[index];
 
@@ -124,7 +130,7 @@ class Files {
     }
 
     getFileExtension(filename) {
-        let ext = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        let ext = filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
         if (!ext) {
             ext = this.constructor.IsDirectory(filename) ? 'dir' : 'undefined';
         }
@@ -136,7 +142,7 @@ class Files {
     }
 
     static formatFileName(filename) {
-        return patcher.basename(filename);
+        return path.basename(filename);
     }
 }
 

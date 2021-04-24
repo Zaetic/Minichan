@@ -8,7 +8,7 @@ const Minichan = require('../index.js');
 
 yargs
 .scriptName('minichan').usage('$0 <cmd> [args]')
-.command('mini [path]', 'Minify', (yarg) => {
+.command('mini', '- Minify and build dist', (yarg) => {
     yarg.option('path', {
         describe: 'Project path',
         alias: 'p',

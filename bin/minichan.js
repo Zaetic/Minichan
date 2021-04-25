@@ -14,25 +14,35 @@ yargs
         alias: 'p',
         default: process.cwd(),
     });
+    yarg.option('force', {
+        describe: 'Force minichan',
+        alias: 'f',
+        default: false,
+    });
 })
 .help()
 .alias('help', 'h')
 .alias('version', 'v');
 
 if (yargs.argv._[0] === 'mini') {
-    const prompt = new Confirm({
-        initial: true,
-        name: 'question',
-        message: `Is the path correct? : [${yargs.argv.path}]`,
-    });
+    const { force } = yargs.argv;
+    if (!force) {
+        const prompt = new Confirm({
+            initial: true,
+            name: 'question',
+            message: `Is the path correct? : [${yargs.argv.path}]`,
+        });
 
-    prompt.run().then((answer) => {
-        if (answer) {
-            new Minichan().init(yargs.argv.path);
-        } else {
-            console.log('- Operation canceled -');
-        }
-    }).catch((error) => console.log('- Operation failed -', error));
+        prompt.run().then((answer) => {
+            if (answer) {
+                new Minichan().init(yargs.argv.path);
+            } else {
+                console.log('- Operation canceled -');
+            }
+        }).catch((error) => console.log('- Operation failed -', error));
+    } else {
+        new Minichan().init(yargs.argv.path);
+    }
 } else {
     console.log('Type minichan --help');
 }

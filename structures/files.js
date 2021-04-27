@@ -43,6 +43,7 @@ class Files {
 
         await fse.copy(this.local, tempDir.name, {
             filter: (pathThis) => {
+                if (pathThis.indexOf('dist') > -1) return false;
                 if (pathThis.indexOf('node_modules') > -1) return false;
                 if (exclude.find((name) => path.resolve(name) === path.resolve(pathThis))) {
                     return false;

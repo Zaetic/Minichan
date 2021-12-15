@@ -18,6 +18,7 @@ yargs
         describe: 'Force minichan',
         alias: 'f',
         default: false,
+        boolean: true,
     });
 })
 .help()

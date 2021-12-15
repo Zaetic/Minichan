@@ -140,7 +140,7 @@ class Files {
     }
 
     getFileExtension(filename) {
-        let ext = filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
+        let ext = filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
         if (!ext) {
             ext = this.constructor.IsDirectory(filename) ? 'dir' : 'undefined';
         }

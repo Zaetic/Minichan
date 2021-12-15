@@ -24,18 +24,20 @@ class Mini {
             const element = files[index];
             const file = element.path;
 
-            Terser.minify(fse.readFileSync(file, 'utf8')).then((result) => {
-                if (result.code) {
-                    fse.writeFileSync(file, result.code, 'utf8');
-                }
-            }).catch((e) => {
-                if (e.name.toLowerCase() === 'syntaxerror') {
-                    if (e.message === "Unexpected character '#'") {
-                        return;
+            Terser.minify(fse.readFileSync(file, 'utf8'))
+                .then((result) => {
+                    if (result.code) {
+                        fse.writeFileSync(file, result.code, 'utf8');
                     }
-                }
-                console.log(`${chalk.red.bold('Error')} ${file}:`, e);
-            });
+                })
+                .catch((e) => {
+                    if (e.name.toLowerCase() === 'syntaxerror') {
+                        if (e.message === "Unexpected character '#'") {
+                            return;
+                        }
+                    }
+                    console.log(`${chalk.red.bold('Error')} ${file}:`, e);
+                });
         }
     }
 

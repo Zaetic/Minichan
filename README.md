@@ -32,17 +32,13 @@ minichan mini
 #### **Opcional**
 
 - `-p <path_here>` Pass path
-    - Example: `minichan mini -p C:\Users\user\Minichan`
+    - Examples: 
+        - `minichan mini -p C:\Users\user\Minichan`
+- `-f` Force path and ignore choose options
+    - Examples: 
+        - `minichan mini -f`
+        - `minichan mini -f -p C:\Users\user\Minichan`
 
 Let you be reminded that I am currently under development and issues might come up, and we will do our very best to get 'em fixed in no time! 💜
 
 Special thanks to all technologies and dependencies used to make this project come true 🥰 !!
-
-### **Dev-Dependencies**
-
-| Name  | Type | Version |
-| ------------- | ------------- | ------------- |
-| [Node.js](https://nodejs.org/en/) | JS  |12.17.0|
-| [eslint](https://eslint.org/) | NPM  |7.12.1|
-| [eslint-config-airbnb-base](https://github.com/airbnb/javascript) | NPM  |14.2.0|
-| [eslint-plugin-import]() | NPM  |2.22.1|

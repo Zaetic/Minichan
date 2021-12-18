@@ -15,7 +15,7 @@ class Files {
 
     async init() {
         try {
-            this.newLocal = `./dist/${this.constructor.formatFileName(this.local)}`;
+            this.directoryCheck();
             await this.copyFiles();
 
             const filesGet = this.getFiles();
@@ -23,6 +23,15 @@ class Files {
             this.files = await this.setSizes('old', this.files);
         } catch (e) {
             throw new Error(chalk.bold.red(`${chalk.red.bold(e.message)}`));
+        }
+    }
+
+    directoryCheck() {
+        this.newLocal = `./dist/${this.constructor.formatFileName(this.local)}`;
+        const existsDirectory = fse.existsSync(this.newLocal);
+        if (existsDirectory) {
+            fse.removeSync(this.newLocal);
+            console.log(`${chalk.bold.greenBright('[Folder]')} Folder cleared`);
         }
     }
 
@@ -34,6 +43,7 @@ class Files {
 
         await fse.copy(this.local, tempDir.name, {
             filter: (pathThis) => {
+                if (pathThis.indexOf('dist') > -1) return false;
                 if (pathThis.indexOf('node_modules') > -1) return false;
                 if (exclude.find((name) => path.resolve(name) === path.resolve(pathThis))) {
                     return false;
@@ -130,7 +140,7 @@ class Files {
     }
 
     getFileExtension(filename) {
-        let ext = filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
+        let ext = filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
         if (!ext) {
             ext = this.constructor.IsDirectory(filename) ? 'dir' : 'undefined';
         }
